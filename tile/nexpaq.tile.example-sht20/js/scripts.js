@@ -40,8 +40,8 @@ document.addEventListener('NexpaqAPIReady', function (e) {
 		//if(event.moduleUuid != targetModuleUuid) return;
                                                                        
         if(event.dataSource =='sht20'){
-           handleAdcValue(event.variables.adc);
-        }
+           handleAdcValue(event.variables.temp, event.variables.hum);
+        } 
         
                                                                       
          });
@@ -67,9 +67,9 @@ function fahrenheit() {
 	number2 = 32;
 	units = "ºF";
 };
-function handleAdcValue(temp1) {
+function handleAdcValue(temp1, hum1) {
     var temperature_receive = temp1;
-    //var humidity_receive = hum;
+    var humidity_receive = hum1;
     
 	// get SHT20 value
 	//var temperature_receive = Nexpaq.API.module.last_data.temperature; 
@@ -78,11 +78,11 @@ function handleAdcValue(temp1) {
 	var temperature0 = (((((175.75*temperature_receive)/65536)-46.85)*number1)+number2);
     
 	var temperature = temperature0.toFixed(2);
-	//var humidity0 = (((125*humidity_receive)/65536)-6);
-	//var humidity = humidity0.toFixed(2);
+	var humidity0 = (((125*humidity_receive)/65536)-6);
+	var humidity = humidity0.toFixed(2);
 
 	document.getElementById("temperature").textContent = temperature+units;
-	//document.getElementById("humidity").textContent = humidity+"%";
+	document.getElementById("humidity").textContent = humidity+"%";
 
 }
 /**

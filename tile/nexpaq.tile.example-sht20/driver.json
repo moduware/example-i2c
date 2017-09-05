@@ -9,12 +9,20 @@
             "source": "2800",
             "variables": [
                 {
-                    "name": "adc",
+                    "name": "temp",
                     "title": "Temperature value",
                     "desciption": "Number represention ADC value from sensor",
                     "data": [0, 1],
                     "format": "{0} * 256 + {1}"
+                },
+                {
+                    "name": "hum",
+                    "title": "humidity value",
+                    "desciption": "Number represention ADC value from sensor",
+                    "data": [2, 3],
+                    "format": "{0} * 256 + {1}"
                 }
+                
             ]
         }
     ]
