@@ -1,0 +1,16 @@
+{
+  "id": "nexpaq.tile.example-sht20",
+  "name": "T&H Example",
+  "description": "Tile for Temperature & Humidity sensor hardware example",
+
+  "version": "1.0.0",
+  "changes": "Initial release",
+  "minumumAppVersion": "1.0.5",
+  "modules": [
+    "nexpaq.module.devmod"
+  ],
+  
+  "title": "SHT20",
+  "color": "magenta",
+  "textColor": "black"
+}
