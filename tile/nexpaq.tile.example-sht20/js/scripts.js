@@ -2,7 +2,7 @@
  * Actions when html and all external files are loaded
  */
 document.addEventListener('DOMContentLoaded', function(event) {
-	// Creating header on top of tile
+// Creating header on top of tile
   Nexpaq.Header.create('Temperature & Humidity');
 
 // Page completely loaded
@@ -15,16 +15,16 @@ document.addEventListener('DOMContentLoaded', function(event) {
 	});
     
 });
-	// Actions when back button clicked. The back button will be added automatically by the native
-	/*window.nexpaqAPI.global.addEventListener('onBackButtonClicked', function() {
-		window.nexpaqAPI.util.closeApplication();
-	});
-	//SHT20val function is called when recieving new data
-	window.nexpaqAPI.DevMod.addEventListener("onDataReceived", SHT20val);
-	// Module actions
+// Actions when back button clicked. The back button will be added automatically by the native
+/*  window.nexpaqAPI.global.addEventListener('onBackButtonClicked', function() {
+    window.nexpaqAPI.util.closeApplication();
+    });
+    //sht20val function is called when recieving new data
+    window.nexpaqAPI.DevMod.addEventListener("onDataReceived", SHT20val);
+    // Module actions
     
-    */
-document.addEventListener('NexpaqAPIReady', function (e) {
+*/
+document.addEventListener('NexpaqAPIReady', function () {
 
     Nexpaq.API.Module.addEventListener('DataReceived', function(event){;
         /**
@@ -40,11 +40,10 @@ document.addEventListener('NexpaqAPIReady', function (e) {
 		//if(event.moduleUuid != targetModuleUuid) return;
                                                                        
         if(event.dataSource =='sht20'){
-           handleAdcValue(event.variables.temp, event.variables.hum);
-        } 
-        
-                                                                      
-         });
+           sht20(event.variables.temp, event.variables.hum);
+            
+            } 
+        });
         
         
     });
@@ -67,20 +66,18 @@ function fahrenheit() {
 	number2 = 32;
 	units = "ºF";
 };
-function handleAdcValue(temp1, hum1) {
+function sht20(temp1){
+    // get SHT20 value
     var temperature_receive = temp1;
     var humidity_receive = hum1;
+    //convert the Recieved Temperature and humidity values from the SHT20 sensor.
     
-	// get SHT20 value
-	//var temperature_receive = Nexpaq.API.module.last_data.temperature; 
-	//var humidity_receive = Nexpaq.API.module.last_data.humidity;
 
-	var temperature0 = (((((175.75*temperature_receive)/65536)-46.85)*number1)+number2);
-    
-	var temperature = temperature0.toFixed(2);
+    var temperature0 = (((((175.75*temperature_receive)/65536)-46.85)*number1)+number2);
+    var temperature = temperature0.toFixed(2);
 	var humidity0 = (((125*humidity_receive)/65536)-6);
 	var humidity = humidity0.toFixed(2);
-
+    // Send the final values of temperature and humidity to the app.
 	document.getElementById("temperature").textContent = temperature+units;
 	document.getElementById("humidity").textContent = humidity+"%";
 

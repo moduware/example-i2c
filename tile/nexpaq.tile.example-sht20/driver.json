@@ -13,14 +13,14 @@
                     "title": "Temperature value",
                     "desciption": "Number represention ADC value from sensor",
                     "data": [0, 1],
-                    "format": "{0} * 256 + {1}"
+                    "format": "{%d * 256 + %d}"
                 },
                 {
                     "name": "hum",
                     "title": "humidity value",
                     "desciption": "Number represention ADC value from sensor",
                     "data": [2, 3],
-                    "format": "{0} * 256 + {1}"
+                    "format": "{%d * 256 + %d}"
                 }
                 
             ]
