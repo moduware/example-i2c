@@ -66,7 +66,7 @@ function fahrenheit() {
 	number2 = 32;
 	units = "ºF";
 };
-function sht20(temp1){
+function sht20(temp1,hum1){
     // get SHT20 value
     var temperature_receive = temp1;
     var humidity_receive = hum1;

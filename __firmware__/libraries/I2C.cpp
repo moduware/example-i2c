@@ -1,19 +1,20 @@
 /*
  * I2C.cpp
  *
- *  Created on: 2015-7-23
- *      Author: Administrator
+ *  Created on: 2017-9-07
+ *      Author: Alan.Lin
  */
 #include "I2C.h"
 #include "msp430.h"
 
-#define	IIC_TIMER_OUT		2200//22000
+#define	IIC_TIMER_OUT		22000//22000
+unsigned char IICFinishflag  = 0x01;
+unsigned int IICTimerOutCnt = 0x00;
+
 static unsigned char TxByteCtr,RxByteCtr;
 static unsigned char TxBuf[16];
 static unsigned char RxBuf[16];
 static unsigned char stop_flag = 1;
-
-unsigned int IICTimerOutCnt = 0x00;
 
 I2C_class I2C;
 inline void I2C_class::I2C_WriteMode(void){
@@ -54,6 +55,9 @@ void I2C_class::change_Slave(unsigned char add){
 }
 void I2C_class::I2C_Tx(unsigned char Reg,unsigned char data[],unsigned char len){
 	unsigned char i = 0;
+
+	stop_flag = 0;
+	IICTimerOutCnt = 0x00;
 	while( (UCB0STAT & UCBBUSY) && (IICTimerOutCnt ++ <= IIC_TIMER_OUT));
 	IICTimerOutCnt = 0;
 	I2C_WriteMode();
@@ -62,7 +66,14 @@ void I2C_class::I2C_Tx(unsigned char Reg,unsigned char data[],unsigned char len)
 		TxBuf[len-1-i] = data[i];
 	}
 	TxByteCtr=len+1;                       	// Load TX byte counter
+	IICFinishflag = 0x00;
 	UCB0CTL1 |= UCTR + UCTXSTT;                 // I2C TX, start condition
+	stop_flag = 1;
+
+	while((IICFinishflag == 0x00) && (IICTimerOutCnt ++ <= IIC_TIMER_OUT)){	//  while (UCB0CTL1 & UCTXSTT);
+	}
+	IICTimerOutCnt = 0x00;
+
 	while ((UCB0CTL1 & UCTXSTP) && (IICTimerOutCnt ++ <= IIC_TIMER_OUT));
 	IICTimerOutCnt = 0;
 }
@@ -71,9 +82,15 @@ void I2C_class::I2C_Rx(unsigned char Reg,unsigned char data[],unsigned char len)
 	I2C_WriteMode();							// Mode to write command
 	TxBuf[0]=Reg;							// Address will be read
 	TxByteCtr=1;								// Load TX byte counter
+	IICFinishflag = 0x00;
 	while ((UCB0CTL1 & UCTXSTP) && (IICTimerOutCnt ++ <= IIC_TIMER_OUT));
 	IICTimerOutCnt = 0;
 	UCB0CTL1 |= UCTR + UCTXSTT ;    			// I2C TX, start condition
+
+	while((IICFinishflag == 0x00) && (IICTimerOutCnt ++ <= IIC_TIMER_OUT)){
+
+	}
+	IICTimerOutCnt = 0x00;
 
 	while ((UCB0CTL1 & UCTXSTP) && (IICTimerOutCnt ++ <= IIC_TIMER_OUT));// Wait for stop bit,generated after send finish
 	IICTimerOutCnt = 0;
@@ -86,6 +103,10 @@ void I2C_class::I2C_Rx(unsigned char Reg,unsigned char data[],unsigned char len)
 	}
 	RxByteCtr = len;							// Load RX byte counter
 
+	IICFinishflag = 0x00;
+	while((IICFinishflag == 0x00) && (IICTimerOutCnt ++ <= IIC_TIMER_OUT)){
+	}
+	IICTimerOutCnt = 0x00;
 	while ((IFG2 & UCB0RXIFG) && (IICTimerOutCnt ++ <= IIC_TIMER_OUT));// Receive finish
 	IICTimerOutCnt = 0;
 	while ((UCB0CTL1 & UCTXSTP) && (IICTimerOutCnt ++ <= IIC_TIMER_OUT));// Receive the stop bit
@@ -112,6 +133,7 @@ __interrupt void USCIAB0TX_ISR(void)
 			}
 			IFG2 &= ~UCB0TXIFG;                     // Clear USCI_B0 TX int flag
 			IE2 &=~UCB0TXIE;
+			IICFinishflag = 0x01;
 		}
 	}
 	if ( IFG2 & UCB0RXIFG )
@@ -128,6 +150,7 @@ __interrupt void USCIAB0TX_ISR(void)
 		  else
 		  {
 			  RxBuf[RxByteCtr] = UCB0RXBUF;    		// Move final RX data to PRxData
+			  IICFinishflag = 0x01;
 		  }
     }
 }
