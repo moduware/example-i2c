@@ -29,8 +29,8 @@ Example with SHT20 sensor module including firmware, module driver and tile.
 - [SHT20 temperature and humidity sensor data sheet][SHT20]
 - [I2C understanding the protocol and interface][I2C]
 - [MSP430 firmware template and how module firmware works][MSP-TEMP]
-- [Flashing firmware to MSP430 developer's module][module]: Click Getting started and then Flashing the MSP module.
-- [MSP430 developer's module introduction][module]
+- TODO: Flashing firmware to MSP430 developer's module
+- TODO: MSP430 developer's module introduction
 - [WebView tile template and TODO: How webview tile works][webview-template]
 - TODO: Installing webview tile onto your smartphone in developer's mode  
   
