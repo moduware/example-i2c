@@ -75,12 +75,12 @@ function sht20(temp1,hum1){
     // local data variables 
     var temperature_receive = temp1;
     var humidity_receive = hum1;
-    //convert the recieved temperature and humidity values from the SHT20 sensor.
+    // convert the recieved temperature and humidity values from the SHT20 sensor.
     var temperature0 = (((((175.75*temperature_receive)/65536)-46.85)*number1)+number2);
     var temperature = temperature0.toFixed(2);
     var humidity0 = (((125*humidity_receive)/65536)-6);
     var humidity = humidity0.toFixed(2);
-    // Send the final values of temperature and humidity to the app.
+    // send the final values of temperature and humidity to the app.
     document.getElementById("temperature").textContent = temperature+units;
     document.getElementById("humidity").textContent = humidity+"%";
 }
